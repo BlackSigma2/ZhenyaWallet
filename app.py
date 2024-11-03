@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 import sqlite3
 import hashlib
 import random
-from datetime import datetime  # Импортируйте datetime
+from datetime import datetime 
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
