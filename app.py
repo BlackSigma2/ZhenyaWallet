@@ -9,11 +9,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 
 
-app.secret_key = 'your_secret_key'  # Установите свой секретный ключ
+app.secret_key = 'your_secret_key'
 
 users = {
     'username': {
-        'password': generate_password_hash('old_password')  # Хэш старого пароля
+        'password': generate_password_hash('old_password')
     }
 }
 
@@ -23,7 +23,7 @@ def init_db():
     conn = sqlite3.connect('/home/zhenyawallet/mysite/database.db')
     c = conn.cursor()
 
-    # Создание таблицы users, если она не существует
+   
     c.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,7 +32,7 @@ def init_db():
         )
     ''')
 
-    # Создание таблицы staking, если она не существует
+    
     c.execute('''
         CREATE TABLE IF NOT EXISTS staking (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -51,7 +51,7 @@ def init_db():
     conn.close()
 
 def alter_transactions_table():
-    """Добавление столбца recipient_wallet, если он отсутствует."""
+    
     with sqlite3.connect(DATABASE) as conn:
         c = conn.cursor()
         try:
@@ -63,11 +63,11 @@ def alter_transactions_table():
 
 
 def generate_wallet_address():
-    """Генерация уникального адреса кошелька."""
+    
     return hashlib.sha256(str(random.getrandbits(256)).encode()).hexdigest()
 
 def get_user_info(wallet_address):
-    """Получение информации о пользователе по адресу кошелька."""
+    
     with sqlite3.connect(DATABASE) as conn:
         c = conn.cursor()
         user_info = c.execute("SELECT username FROM users WHERE wallet_address = ?", (wallet_address,)).fetchone()
@@ -75,7 +75,7 @@ def get_user_info(wallet_address):
 
 @app.template_filter('datetimeformat')
 def datetimeformat(value):
-    """Фильтр для форматирования даты и времени."""
+    
     if isinstance(value, str):
         return datetime.strptime(value, '%Y-%m-%d %H:%M:%S').strftime('%d-%m-%Y %H:%M:%S')
     return value
@@ -108,11 +108,11 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    print("Функция регистрации вызвана")  # Логирование вызова функции
+    print("Функция регистрации вызвана")  
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        wallet_address = generate_wallet_address()  # Генерация адреса кошелька
+        wallet_address = generate_wallet_address()  
 
         with sqlite3.connect(DATABASE) as conn:
             c = conn.cursor()
@@ -124,9 +124,9 @@ def register():
                 return redirect(url_for('login'))
             except sqlite3.IntegrityError:
                 flash('Это имя пользователя уже занято. Попробуйте другое.')
-                print(f"Ошибка: {username} уже существует")  # Логирование ошибки
+                print(f"Ошибка: {username} уже существует")  
             except Exception as e:
-                print(f"Ошибка при регистрации: {str(e)}")  # Логирование ошибки
+                print(f"Ошибка при регистрации: {str(e)}")  
     return render_template('register.html')
 
 
@@ -140,10 +140,10 @@ def stake():
     if request.method == 'POST':
         currency = request.form.get('currency')
         amount = float(request.form.get('amount'))
-        duration = int(request.form.get('duration'))  # Время стейкинга в днях
-        reward_rate = 0.05  # Процент вознаграждения (например, 5%)
+        duration = int(request.form.get('duration'))  
+        reward_rate = 0.05  
 
-        # Получаем текущий баланс
+        
         with sqlite3.connect(DATABASE) as conn:
             c = conn.cursor()
             balance = c.execute(f"SELECT balance_{currency} FROM users WHERE id = ?", (user_id,)).fetchone()[0]
@@ -152,14 +152,14 @@ def stake():
                 flash('Недостаточно средств для стейкинга!', 'error')
                 return redirect(url_for('stake'))
 
-            # Вычитаем стейкаемую сумму с баланса
+            
             c.execute(f"UPDATE users SET balance_{currency} = balance_{currency} - ? WHERE id = ?", (amount, user_id))
 
-            # Рассчитываем даты начала и окончания стейкинга
+            
             start_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             end_date = (datetime.now() + timedelta(days=duration)).strftime('%Y-%m-%d %H:%M:%S')
 
-            # Добавляем данные о стейкинге в таблицу
+            
             c.execute('''INSERT INTO staking (user_id, currency, staked_amount, reward_rate, start_date, end_date)
                          VALUES (?, ?, ?, ?, ?, ?)''', (user_id, currency, amount, reward_rate, start_date, end_date))
 
@@ -178,7 +178,7 @@ def claim_rewards():
 
     with sqlite3.connect(DATABASE) as conn:
         c = conn.cursor()
-        # Получаем информацию о стейкинге
+        
         staking_info = c.execute('''SELECT staked_amount, reward_rate, currency, start_date, end_date
                                     FROM staking WHERE id = ? AND user_id = ? AND status = 'active' ''',
                                     (staking_id, user_id)).fetchone()
@@ -186,15 +186,15 @@ def claim_rewards():
         if staking_info:
             staked_amount, reward_rate, currency, start_date, end_date = staking_info
 
-            # Проверяем, что стейкинг завершен
+            
             if datetime.now() >= datetime.strptime(end_date, '%Y-%m-%d %H:%M:%S'):
-                # Рассчитываем вознаграждение
+                
                 reward = staked_amount * reward_rate
 
-                # Обновляем баланс пользователя
+                
                 c.execute(f"UPDATE users SET balance_{currency} = balance_{currency} + ? WHERE id = ?", (reward, user_id))
 
-                # Обновляем статус стейкинга
+                
                 c.execute("UPDATE staking SET status = 'completed' WHERE id = ?", (staking_id,))
 
                 conn.commit()
@@ -219,9 +219,9 @@ def delete_account():
     with sqlite3.connect(DATABASE) as conn:
         c = conn.cursor()
         try:
-            # Удаление всех транзакций пользователя
+            
             c.execute("DELETE FROM transactions WHERE user_id = ?", (user_id,))
-            # Удаление пользователя
+            
             c.execute("DELETE FROM users WHERE id = ?", (user_id,))
             conn.commit()
             session.pop('username', None)
@@ -236,17 +236,17 @@ def delete_account():
 def settings():
     if request.method == 'POST':
         new_username = request.form.get('new_username')
-        old_password = request.form.get('old_password').strip()  # Убираем пробелы
-        new_password = request.form.get('new_password').strip()  # Убираем пробелы
+        old_password = request.form.get('old_password').strip()  
+        new_password = request.form.get('new_password').strip()  
 
-        # Проверка изменения имени пользователя
+        
         if new_username:
-            flash('Имя пользователя обновлено', 'success')  # Здесь добавьте логику обновления имени пользователя
+            flash('Имя пользователя обновлено', 'success')  
 
-        # Проверка изменения пароля
+        
         if old_password and new_password:
-            print("Введенный старый пароль:", old_password)  # Логирование
-            print("Хэш старого пароля в базе данных:", users['username']['password'])  # Логирование
+            print("Введенный старый пароль:", old_password)  
+            print("Хэш старого пароля в базе данных:", users['username']['password'])  
 
             if check_password_hash(users['username']['password'], old_password):
                 users['username']['password'] = generate_password_hash(new_password)
@@ -262,7 +262,7 @@ def update_password():
     new_password = request.form.get('new_password')
     confirm_password = request.form.get('confirm_password')
 
-    # Проверка текущего пароля
+    
     if check_password_hash(users['username'], current_password):
         if new_password == confirm_password:
             # Обновление пароля (зашифровываем и сохраняем)
@@ -277,7 +277,7 @@ def update_password():
 
 @app.route('/update_username', methods=['POST'])
 def update_username():
-    user_id = session.get('user_id')  # Получаем ID текущего пользователя
+    user_id = session.get('user_id')  
     new_username = request.form['new_username']
 
     if user_id is None:
@@ -289,7 +289,7 @@ def update_username():
         try:
             c.execute("UPDATE users SET username = ? WHERE id = ?", (new_username, user_id))
             conn.commit()
-            session['username'] = new_username  # Обновляем имя пользователя в сессии
+            session['username'] = new_username  
             flash('Имя пользователя успешно изменено!', 'success')
         except sqlite3.IntegrityError:
             flash('Это имя пользователя уже занято. Попробуйте другое.', 'error')
@@ -326,7 +326,7 @@ def top_up():
 
 @app.route('/transfer', methods=['GET', 'POST'])
 def transfer():
-    # Проверяем, вошел ли пользователь в систему
+    
     user_id = session.get('user_id')
     if user_id is None:
         flash('Вы вышли из под аккаунта. Пожалуйста, войдите заново.', 'error')
@@ -337,13 +337,13 @@ def transfer():
         amount = request.form.get('amount')
         currency = request.form.get('currency')
 
-        # Проверка на заполненность всех полей
+        
         if not recipient_wallet or not amount or not currency:
             flash('Пожалуйста, заполните все поля!')
             return redirect(url_for('transfer'))
 
         try:
-            amount = float(amount)  # Преобразование суммы в число
+            amount = float(amount)  
         except ValueError:
             flash('Введите корректную сумму!')
             return redirect(url_for('transfer'))
@@ -351,7 +351,7 @@ def transfer():
         with sqlite3.connect(DATABASE) as conn:
             c = conn.cursor()
 
-            # Получение баланса пользователя
+            
             user_balance_query = f"SELECT balance_{currency.lower()} FROM users WHERE id = ?"
             user_balance = c.execute(user_balance_query, (user_id,)).fetchone()
 
@@ -361,9 +361,9 @@ def transfer():
 
             user_balance = user_balance[0]
 
-            # Проверка на достаточность средств
+            
             if user_balance >= amount:
-                # Проверяем адрес получателя
+                
                 recipient_query = "SELECT id FROM users WHERE wallet_address = ?"
                 recipient_id = c.execute(recipient_query, (recipient_wallet,)).fetchone()
 
@@ -371,15 +371,15 @@ def transfer():
                     flash('Получатель не найден!')
                     return redirect(url_for('transfer'))
 
-                # Обновляем баланс отправителя
+                
                 c.execute(f"UPDATE users SET balance_{currency.lower()} = balance_{currency.lower()} - ? WHERE id = ?", (amount, user_id))
-                # Обновляем баланс получателя
+                
                 c.execute(f"UPDATE users SET balance_{currency.lower()} = balance_{currency.lower()} + ? WHERE id = ?", (amount, recipient_id[0]))
 
-                # Записываем транзакцию
+                
                 c.execute("INSERT INTO transactions (user_id, amount, currency, transaction_type, recipient_wallet) VALUES (?, ?, ?, 'Перевод', ?)", (user_id, amount, currency, recipient_wallet))
 
-                conn.commit()  # Коммит транзакции
+                conn.commit()  
                 flash(f'Перевод {amount} {currency} на кошелек {recipient_wallet} выполнен успешно!')
             else:
                 flash('Недостаточно средств для перевода!')
@@ -394,7 +394,7 @@ def transaction_history():
     user_id = session.get('user_id')
     with sqlite3.connect(DATABASE) as conn:
         c = conn.cursor()
-        # Обновленный запрос для получения имен отправителя и получателя
+        
         transactions = c.execute('''
             SELECT t.id, sender.username AS sender_name, receiver.username AS receiver_name,
                    t.amount, t.currency, t.transaction_type
@@ -406,13 +406,13 @@ def transaction_history():
     return render_template('transaction_history.html', transactions=transactions)
 
 user_data = {
-    'username': 'Имя пользователя',  # Замените на нужное имя пользователя
-    'profile_image': 'profile_image.png',  # Имя файла изображения в папке static
+    'username': 'Имя пользователя',  
+    'profile_image': 'profile_image.png',  
 }
 
 @app.route('/profile')
 def profile():
-    # Предположим, что вы получаете user_info из базы данных или сессии
+    
     user_info = [None, user_data['username'], user_data['profile_image']]
 
     return render_template('profile.html', user_info=user_info)
@@ -429,7 +429,7 @@ def exchange():
         to_currency = request.form.get('to_currency')
         amount = float(request.form.get('amount'))
 
-        # Пример обменного курса (нужно заменить реальными курсами)
+        
         exchange_rates = {
             'zhenyacoin': 1.0,  # Обменный курс для ZhenyaCoin
             'bitcoin': 50000.0,  # 1 BTC = 50000 ZHY
@@ -442,7 +442,7 @@ def exchange():
             flash('Неверная валюта для обмена!')
             return redirect(url_for('exchange'))
 
-        # Проверка наличия средств
+        
         user_balance_query = f"SELECT balance_{from_currency} FROM users WHERE id = ?"
         user_balance = sqlite3.connect(DATABASE).execute(user_balance_query, (user_id,)).fetchone()
 
@@ -450,10 +450,10 @@ def exchange():
             flash('Недостаточно средств для обмена!')
             return redirect(url_for('exchange'))
 
-        # Рассчет обмена
+        
         amount_in_to_currency = (amount * exchange_rates[from_currency]) / exchange_rates[to_currency]
 
-        # Обновляем балансы
+        
         with sqlite3.connect(DATABASE) as conn:
             c = conn.cursor()
             c.execute(f"UPDATE users SET balance_{from_currency} = balance_{from_currency} - ? WHERE id = ?", (amount, user_id))
@@ -473,5 +473,5 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    init_db()  # Инициализация базы данных и создание таблиц
+    init_db()  
     app.run(debug=True)
