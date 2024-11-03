@@ -1,0 +1,83 @@
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #eaeef1;
+}
+
+header {
+    background-color: #E6E6E6;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.wallet-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: auto;
+}
+
+/* Стили для вкладок */
+.tabs {
+    display: flex;
+    justify-content: space-between; /* Равномерное распределение кнопок вкладок */
+    margin-bottom: 20px;
+}
+
+.tablink {
+    background-color: #f0f0f0; /* Светлый фон для кнопок вкладок */
+    border: none;
+    padding: 15px;
+    cursor: pointer;
+    flex: 1; /* Кнопки займут равное пространство */
+    text-align: center; /* Центрируем текст */
+    transition: background 0.3s; /* Плавный переход */
+}
+
+.tablink:hover {
+    background-color: #d9d9d9; /* Изменяем фон при наведении */
+}
+
+
+
+/* Стили для содержимого вкладок */
+.tabcontent {
+    display: none; /* Скрываем содержимое по умолчанию */
+    padding: 20px;
+}
+
+.tabcontent.active {
+    display: block; /* Показываем активную вкладку */
+}
+
+/* Стили для кнопок в разделе кошелька */
+.button-group {
+    display: flex;
+    justify-content: space-between; /* Равномерное распределение кнопок */
+    margin-top: 20px; /* Отступ сверху */
+}
+
+.button {
+    background: #0088cc; /* Цвет кнопки */
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    flex: 1; /* Кнопки займут равное пространство */
+    margin: 5px; /* Отступ между кнопками */
+    transition: background 0.3s; /* Плавный переход */
+}
+
+.button:hover {
+    background: #0077b3; /* Цвет кнопки при наведении */
+}
