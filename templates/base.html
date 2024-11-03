@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Убедитесь, что у вас только один мета-тег viewport -->
+    <title>Кошелек</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <!-- Заголовок "Кошелек" убран -->
+        </div>
+    </header>
+    <main>
+        {% block content %}
+        <div class="wallet-container">
+            <!-- Ваш контент для домашней страницы -->
+            {% block wallet_content %}{% endblock %}
+        </div>
+        {% endblock %}
+    </main>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>

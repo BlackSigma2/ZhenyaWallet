@@ -1,0 +1,17 @@
+<form method="POST" action="{{ url_for('stake') }}">
+    <label for="currency">Валюта:</label>
+    <select name="currency" id="currency">
+        <option value="ZhenyaCoin">ZhenyaCoin</option>
+        <option value="Bitcoin">Bitcoin</option>
+        <option value="Ethereum">Ethereum</option>
+        <!-- Добавьте другие валюты -->
+    </select>
+
+    <label for="amount">Сумма для стейкинга:</label>
+    <input type="number" name="amount" id="amount" required>
+
+    <label for="duration">Период стейкинга (в днях):</label>
+    <input type="number" name="duration" id="duration" required>
+
+    <button type="submit">Начать стейкинг</button>
+</form>

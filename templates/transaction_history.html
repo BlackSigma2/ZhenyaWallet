@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <title>История транзакций</title>
+    <style>
+        body {
+            background-color: #f2f2f2;
+        }
+        .transaction-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            padding: 15px;
+        }
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .transaction-type {
+            font-weight: bold;
+            color: #28a745; /* Зеленый для пополнений */
+        }
+        .transaction-type.transfer {
+            color: #dc3545; /* Красный для переводов */
+        }
+        .navbar {
+            position: sticky; /* Прокручиваемая панель */
+            top: 0; /* Придвинуть к верху */
+            z-index: 1000; /* Поверх других элементов */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="#">История транзакций</a>
+        <a href="/" class="nav-link">
+            <i class="fas fa-sign-out-alt" style="font-size: 24px;"></i>
+        </a>
+    </nav>
+
+    <div class="container mt-3">
+        {% for transaction in transactions %}
+            <div class="transaction-card">
+                <div class="transaction-header">
+                    <span class="transaction-type {{ transaction[5] }}">{{ transaction[5] }}</span>
+                    <span>{{ transaction[3] }} {{ transaction[4] }}</span>
+                </div>
+                {% if transaction[5] == 'Перевод' %}
+                    <p> {{ transaction[3] }} {{ transaction[4] }}<br>
+                       Получатель: {{ transaction[2] }}<br>
+                       Отправитель: {{ transaction[1] }}</p>
+                {% else %}
+                    <p>Вы получили: {{ transaction[3] }} {{ transaction[4] }}<br>
+                       Отправитель: {{ transaction[1] }}<br>
+                       Получатель: {{ transaction[2] }}</p>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="transaction-card">
+                <p class="text-center">Нет транзакций.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

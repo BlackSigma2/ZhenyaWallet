@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #e6e6e6; /* Светлый фон */
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+    
+    .profile-container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 40px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        text-align: center;
+    }
+
+    .profile-image {
+        width: 150px; /* Размер изображения профиля */
+        height: 150px; /* Размер изображения профиля */
+        border-radius: 50%; /* Круглая форма изображения */
+        margin-bottom: 20px; /* Отступ снизу */
+    }
+
+    h2 {
+        color: #0088cc; /* Цвет заголовка */
+        font-size: 32px; /* Размер заголовка */
+    }
+
+    h3 {
+        color: #333333; /* Цвет подзаголовка */
+        font-weight: 500; /* Нормальный вес шрифта */
+        font-size: 22px; /* Размер подзаголовка */
+    }
+</style>
+
+<div class="profile-container">
+    <img src="{{ url_for('static', filename=user_info[2]) }}" alt="Profile Image" class="profile-image"> <!-- Изображение профиля -->
+    <h2>{{ user_info[1] }}</h2> <!-- Имя пользователя без дополнительных слов -->
+    
+    <h3>Часто задаваемые вопросы (FAQ)</h3>
+    <p>Здесь могут быть ваши часто задаваемые вопросы.</p>
+</div>
+
+{% endblock %}

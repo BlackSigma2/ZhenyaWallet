@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+    background-color: #f5f5f5; /* Светлый фон */
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    text-align: center; /* Центрируем текст */
+}
+
+.container {
+    display: flex;
+    flex-direction: column; /* Вертикальное выравнивание */
+    justify-content: center; /* Центрирование по вертикали */
+    align-items: center; /* Центрирование по горизонтали */
+    min-height: 100vh; /* Минимальная высота контейнера - 100% высоты окна */
+}
+
+.logo {
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+
+.logo img {
+    width: 300px; /* Размер логотипа */
+    height: auto;
+}
+
+h1 {
+    color: #333333; /* Темный цвет текста */
+    font-size: 50px;
+    margin: 20px 0 10px; /* Отступы сверху и снизу */
+    font-weight: bold;
+}
+
+p {
+    color: #999999; /* Серый цвет для подзаголовка */
+    font-size: 20px;
+    margin-bottom: 30px; /* Отступ снизу */
+}
+
+.input-container {
+    width: 90%; /* Ширина контейнера для полей ввода */
+    max-width: 600px; /* Увеличенная максимальная ширина для полей ввода */
+    margin: 0 auto; /* Центрируем контейнер */
+}
+
+input[type="text"], input[type="password"], button {
+    width: 100%; /* Ширина поля ввода и кнопки */
+    padding: 15px;
+    margin: 10px 0; /* Убираем отрицательные отступы */
+    border: none; /* Убираем обводку */
+    border-radius: 8px; /* Закругленные углы */
+    background-color: #f0f0f0; /* Цвет фона поля ввода */
+    font-size: 16px; /* Размер шрифта */
+    transition: background-color 0.3s, box-shadow 0.3s;
+    box-sizing: border-box; /* Учитываем padding в ширине */
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+    background-color: #e6e6e6; /* Цвет фона при фокусе */
+    outline: none; /* Убираем стандартную обводку */
+}
+
+.blue-line {
+    height: 2px; /* Высота синей полосы */
+    background-color: #3b99ff; /* Синий цвет */
+    margin: 10px 0; /* Убираем отрицательные отступы */
+    width: 100%; /* Ширина полосы 100% */
+    max-width: 600px; /* Максимальная ширина полосы для ограничения */
+}
+
+button {
+    background-color: #3B99FF; /* Синий цвет */
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 20px; /* Отступ сверху для кнопки */
+    width: 100%; /* Ширина кнопки */
+}
+
+button:hover {
+    background-color: #3480d1; /* Более темный синий при наведении */
+}
+
+.register-link, .login-link, .support-link {
+    display: block; /* Блок для ссылки */
+    margin-top: 30px; /* Отступ сверху */
+    color: #3b99ff; /* Цвет текста */
+    text-decoration: none; /* Убираем подчеркивание */
+    font-size: 14px; /* Размер шрифта */
+    transition: color 0.3s; /* Плавный переход цвета */
+}
+
+.register-link:hover, .login-link:hover, .support-link:hover {
+    color: #007bb5; /* Цвет текста при наведении */
+}
+
+/* Медиазапросы для телефонов */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 36px; /* Уменьшаем размер заголовка на мобильных устройствах */
+    }
+
+    p {
+        font-size: 16px; /* Уменьшаем размер подзаголовка на мобильных устройствах */
+    }
+
+    .logo img {
+        width: 250px; /* Уменьшаем размер логотипа на мобильных устройствах */
+    }
+
+    .input-container {
+        width: 95%; /* Увеличиваем ширину контейнера для полей ввода на мобильных устройствах */
+    }
+
+    button {
+        padding: 12px; /* Уменьшаем отступ кнопки на мобильных устройствах */
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 28px; /* Дополнительное уменьшение размера заголовка для маленьких экранов */
+    }
+
+    p {
+        font-size: 14px; /* Дополнительное уменьшение размера подзаголовка для маленьких экранов */
+    }
+
+    .logo img {
+        width: 200px; /* Уменьшаем размер логотипа для маленьких экранов */
+    }
+
+    .input-container {
+        width: 95%; /* Увеличиваем ширину контейнера для полей ввода на очень маленьких устройствах */
+    }
+}
+
+
+</style>
+
+<div class="container">
+    <div class="logo">
+        <img src="{{ url_for('static', filename='Znehya_static.png') }}" alt="Logo"> <!-- Ваш логотип -->
+    </div>
+    <h1>Registration</h1>
+    <p>The decentralized web is waiting for you!</p> <!-- Подзаголовок, можете изменить по желанию -->
+
+    <form method="POST" action="{{ url_for('register') }}">
+        <div class="input-container">
+            <input type="text" name="username" placeholder="Username" required>
+            <div class="blue-line"></div> <!-- Синяя полоса под полем ввода -->
+            <input type="password" name="password" placeholder="Password" required>
+            <div class="blue-line"></div> <!-- Синяя полоса под полем ввода -->
+            <button type="submit">Register</button> <!-- Кнопка для регистрации -->
+        </div>
+    </form>
+
+    <a class="login-link" href="{{ url_for('login') }}">Already have an account? Login</a>
+    <a class="support-link" href="https://zhenya-wallet.onepage.me/znehya-wallet-faq">Znehya Wallet Support</a>
+</div>
+
+{% endblock %}

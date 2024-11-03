@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #f5f5f5; /* Светлый фон */
+        font-family: 'Arial', sans-serif;
+        display: flex;
+        justify-content: center; /* Центрирование содержимого по горизонтали */
+        align-items: center; /* Центрирование содержимого по вертикали */
+        height: 100vh; /* Полная высота */
+        margin: 0; /* Убираем отступ по умолчанию */
+    }
+
+    .container {
+        background-color: #ffffff; /* Белый фон контейнера */
+        border-radius: 10px; /* Скругленные углы */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Тень */
+        padding: 60px; /* Внутренние отступы увеличены */
+        width: 500px; /* Ширина контейнера увеличена */
+        text-align: center; /* Центрирование текста */
+    }
+
+    h1 {
+        color: #1e1e1e; /* Цвет заголовка */
+        font-size: 32px; /* Размер заголовка увеличен */
+        margin-bottom: 40px; /* Отступ снизу увеличен */
+    }
+
+    h3 {
+        color: #333; /* Цвет заголовков для полей */
+        margin-bottom: 15px; /* Отступ снизу увеличен */
+        text-align: left; /* Выравнивание текста */
+        font-size: 18px; /* Размер шрифта заголовков увеличен */
+    }
+
+    .input-container {
+        width: 100%; /* Ширина на 100% */
+        margin: 15px 0; /* Отступы между элементами увеличены */
+    }
+
+    input[type="text"], input[type="number"] {
+        width: 100%; /* Ширина элементов на 100% */
+        padding: 15px; /* Внутренний отступ */
+        border: 1px solid #d9d9d9; /* Рамка */
+        border-radius: 5px; /* Скругленные углы */
+        font-size: 18px; /* Размер шрифта увеличен */
+        box-sizing: border-box; /* Учитывать отступы и рамку в ширине */
+        transition: border-color 0.3s; /* Плавный переход рамки */
+    }
+
+    input[type="text"]:focus, input[type="number"]:focus {
+        border-color: #ff6600; /* Цвет рамки при фокусе */
+        outline: none; /* Убираем обводку при фокусе */
+    }
+
+    .currency-select {
+        position: relative; /* Для позиционирования выпадающего списка */
+        margin: 15px 0; /* Отступы между элементами */
+    }
+
+    .select-selected {
+        display: flex; /* Гибкое выравнивание */
+        align-items: center; /* Вертикальное выравнивание */
+        cursor: pointer; /* Курсор при наведении */
+        padding: 15px; /* Внутренний отступ */
+        border: 1px solid #d9d9d9; /* Рамка */
+        border-radius: 5px; /* Скругленные углы */
+        background-color: #f9f9f9; /* Цвет фона */
+        font-size: 18px; /* Размер шрифта увеличен */
+        transition: border-color 0.3s; /* Плавный переход рамки */
+    }
+
+    .select-selected img {
+        width: 30px; /* Размер иконки увеличен */
+        height: 30px; /* Размер иконки увеличен */
+        margin-right: 10px; /* Отступ между иконкой и текстом */
+    }
+
+    .select-items {
+        position: absolute; /* Позиционирование */
+        z-index: 99; /* Чтобы быть сверху других элементов */
+        background-color: #ffffff; /* Белый фон выпадающего списка */
+        border: 1px solid #d9d9d9; /* Рамка */
+        border-radius: 5px; /* Скругленные углы */
+        display: none; /* Скрываем по умолчанию */
+        max-height: 300px; /* Ограничение высоты увеличено */
+        overflow-y: auto; /* Полоса прокрутки */
+        width: 100%; /* Ширина на 100% */
+    }
+
+    .select-items div {
+        padding: 15px; /* Внутренний отступ */
+        cursor: pointer; /* Курсор при наведении */
+        display: flex; /* Гибкое выравнивание */
+        align-items: center; /* Вертикальное выравнивание */
+        transition: background-color 0.3s; /* Плавный переход фона */
+        font-size: 18px; /* Размер шрифта увеличен */
+    }
+
+    .select-items div:hover {
+        background-color: #f0f0f0; /* Цвет фона при наведении */
+    }
+
+    button {
+        width: 100%; /* Ширина кнопки на 100% */
+        padding: 15px; /* Внутренний отступ для кнопки */
+        margin-top: 40px; /* Отступ сверху увеличен */
+        background-color: #ff6600; /* Цвет фона кнопки */
+        color: white; /* Цвет текста на кнопке */
+        border: none; /* Убираем рамку */
+        border-radius: 5px; /* Скругленные углы */
+        cursor: pointer; /* Курсор при наведении */
+        transition: background-color 0.3s; /* Плавный переход цвета */
+        font-size: 18px; /* Размер шрифта увеличен */
+    }
+
+    button:hover {
+        background-color: #e65c00; /* Цвет фона кнопки при наведении */
+    }
+</style>
+
+<div class="container">
+    <h1>Пополнить баланс</h1>
+    
+    <form method="POST" action="{{ url_for('top_up') }}">
+        <h3>Выберите валюту</h3>
+        <div class="currency-select">
+            <div class="select-selected">
+                <img id="currency-icon" src="" alt="Выбор валюты" style="display: none;">
+                <span>Выберите валюту</span>
+            </div>
+            <div class="select-items">
+                <div data-value="ZhenyaCoin" data-icon="{{ url_for('static', filename='zhenyacoin.png') }}">
+                    <img src="{{ url_for('static', filename='zhenyacoin.png') }}" alt="ZhenyaCoin"> ZhenyaCoin
+                </div>
+                <div data-value="Bitcoin" data-icon="https://cryptologos.cc/logos/bitcoin-btc-logo.svg">
+                    <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.svg" alt="Bitcoin"> Bitcoin
+                </div>
+                <div data-value="Ethereum" data-icon="https://cryptologos.cc/logos/ethereum-eth-logo.svg">
+                    <img src="https://cryptologos.cc/logos/ethereum-eth-logo.svg" alt="Ethereum"> Ethereum
+                </div>
+                <div data-value="USDT" data-icon="https://cryptologos.cc/logos/tether-usdt-logo.svg">
+                    <img src="https://cryptologos.cc/logos/tether-usdt-logo.svg" alt="USDT"> USDT
+                </div>
+                <div data-value="TON" data-icon="https://cryptologos.cc/logos/toncoin-ton-logo.svg">
+                    <img src="https://cryptologos.cc/logos/toncoin-ton-logo.svg" alt="TON"> TON
+                </div>
+                <div data-value="Makscoin" data-icon="{{ url_for('static', filename='Maks_coin.png') }}">
+                    <img src="{{ url_for('static', filename='Maks_coin.png') }}" alt="Makscoin"> Makscoin
+                </div>
+            </div>
+            <input type="hidden" name="currency" id="selected-currency">
+        </div>
+
+        <h3>Адрес</h3>
+        <div class="input-container">
+            <input type="text" name="wallet_address" id="wallet_address" placeholder="Введите адрес кошелька" required>
+        </div>
+
+        <h3>Сумма</h3>
+        <div class="input-container">
+            <input type="number" name="amount" id="amount" placeholder="Сумма" required>
+        </div>
+
+        <button type="submit">Пополнить</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var selected = document.querySelector('.select-selected');
+        var items = document.querySelector('.select-items');
+        var hiddenInput = document.getElementById('selected-currency');
+        var currencyIcon = document.getElementById('currency-icon');
+
+        selected.addEventListener('click', function() {
+            items.style.display = items.style.display === 'block' ? 'none' : 'block';
+        });
+
+        var options = items.querySelectorAll('div');
+        options.forEach(function(option) {
+            option.addEventListener('click', function() {
+                hiddenInput.value = this.getAttribute('data-value');
+                currencyIcon.src = this.getAttribute('data-icon');
+                currencyIcon.style.display = 'block';
+                selected.querySelector('span').textContent = this.getAttribute('data-value');
+                items.style.display = 'none';
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!selected.contains(e.target)) {
+                items.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}

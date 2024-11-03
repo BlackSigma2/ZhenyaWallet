@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Загрузка NFT</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Подключите свой CSS файл -->
+</head>
+<body>
+    <div class="container">
+        <h1>Загрузка NFT</h1>
+        <form action="/upload_nft" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="nft_file">Выберите файл NFT:</label>
+                <input type="file" name="nft_file" id="nft_file" accept="image/*,video/*" required>
+            </div>
+            <div class="form-group">
+                <label for="name">Название NFT:</label>
+                <input type="text" name="name" id="name" placeholder="Введите название NFT" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Описание NFT:</label>
+                <textarea name="description" id="description" placeholder="Введите описание NFT" required></textarea>
+            </div>
+            <button type="submit" class="btn">Загрузить NFT</button>
+        </form>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        // Можно добавить обработку формы с помощью JavaScript, если это необходимо
+        const form = document.querySelector('form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Предотвращаем отправку формы по умолчанию
+            
+            const formData = new FormData(form);
+            const response = await fetch('/upload_nft', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            document.getElementById('message').innerText = result.message;
+        });
+    </script>
+</body>
+</html>

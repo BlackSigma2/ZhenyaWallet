@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Стартовая страница кошелька</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"> <!-- Ссылка на шрифт -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif; /* Применение шрифта */
+            background-color: #F5F5F5;
+            color: white;
+            text-align: center;
+            padding: 50px;
+        }
+        h1, p {
+            color: black;  /* Цвет текста черный */
+        }
+        h1 {
+            font-size: 36px;
+        }
+        p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .image-container {
+            margin: 30px 0;
+        }
+        .image-container img {
+            width: 450px;
+            height: 450px;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .button {
+            background-color: #0276C9;
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            text-align: center;
+            font-size: 16px;
+            margin: 10px;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 300px;
+        }
+        .button-secondary {
+            background-color: transparent;
+            border: 1px solid #0276C9;
+            color: #0276C9;
+            width: 300px;
+        }
+        .checkbox-container {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .checkbox-container input {
+            margin-right: 10px;
+            width: 25px;  /* Увеличение размера галочки */
+            height: 25px; /* Увеличение размера галочки */
+        }
+        .checkbox-container label {
+            color: black; /* Цвет текста чекбокса черный */
+            font-size: 16px; /* Размер шрифта текста */
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            display: none; /* Скрыто по умолчанию */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Let's get started</h1>
+    <p>Millions trust your wallet as a secure way to access the web3 world.</p>
+
+    <div class="image-container">
+        <img src="/static/Znehya.png" alt="Изображение кошелька">
+    </div>
+
+    <div class="checkbox-container">
+        <input type="checkbox" id="terms-checkbox">
+        <label for="terms-checkbox">I agree with <a href="#" style="color: #4285f4;">terms of use of Znehya Wallet</a></label>
+    </div>
+
+    <!-- Сообщение об ошибке -->
+    <p class="error-message" id="error-message">You must accept the terms of use to continue.</p>
+
+    <div class="button-container">
+        <button class="button" id="create-wallet">Create a new wallet</button>
+        <button class="button button-secondary" id="import-wallet">Import an existing wallet</button>
+    </div>
+
+    <script>
+        const checkbox = document.getElementById('terms-checkbox');
+        const createButton = document.getElementById('create-wallet');
+        const importButton = document.getElementById('import-wallet');
+        const errorMessage = document.getElementById('error-message');
+
+        // Функция для проверки, если галочка не отмечена, показать сообщение
+        function handleButtonClick(url) {
+            if (checkbox.checked) {
+                errorMessage.style.display = 'none'; // Скрыть сообщение об ошибке
+                window.location.href = url;
+            } else {
+                errorMessage.style.display = 'block'; // Показать сообщение об ошибке
+            }
+        }
+
+        // Перенаправление при нажатии кнопок с проверкой на галочку
+        createButton.addEventListener('click', function() {
+            handleButtonClick('/register');
+        });
+
+        importButton.addEventListener('click', function() {
+            handleButtonClick('/login');
+        });
+    </script>
+
+</body>
+</html>
